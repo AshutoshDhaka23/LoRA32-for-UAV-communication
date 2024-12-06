@@ -1,18 +1,17 @@
 #include "mavlink/common/mavlink.h"  // MAVLink library
-#include "rn2xx3.h"          // RN2483 LoRa library
+#include <SoftwareSerial.h>
+#include <rn2xx3.h>          // RN2483 LoRa library
+
+#define RESET 15
+SoftwareSerial mySerial(4,5);
 
 // LED and timing constants
 const int ledPin = 2;             // LED pin (GPIO 2)
 unsigned long lastHeartbeatTime = 0;  // Last heartbeat message time
 bool ledState = false;            // LED state
 
-// LoRa credentials
-const String appEUI = "BE7A000000001465";   // Replace with your App EUI
-const String appKey = "5AB9EC20C83515D73EA5C58B49003B6F";   // Replace with your App Key
-
 // LoRa RN2483 setup
-HardwareSerial loraSerial(1);     // LoRa module on Serial1
-rn2xx3 loraModule(loraSerial);    // LoRa RN2483 module instance
+rn2xx3 myLora(mySerial);
 
 void setup() {
   // LED setup
@@ -20,70 +19,133 @@ void setup() {
   digitalWrite(ledPin, LOW);
 
   // Debug Serial Monitor
-  Serial.begin(115200);
+  Serial.begin(38400);
   Serial.println("ESP32 is ready. Listening for MAVLink heartbeat packets...");
 
   // LoRa module initialization
-  loraSerial.begin(57600);  // LoRa module baud rate
+  mySerial.begin(57600);  // LoRa module baud rate
   Serial.println("Initializing RN2483 module...");
-  
-  // Auto-baud LoRa module
-  loraModule.autobaud();
-  if (!loraModule.initOTAA(appEUI, appKey)) {
-    Serial.println("Failed to join LoRaWAN network. Check credentials.");
-    while (1); // Halt execution
-  }
-  Serial.println("Successfully joined LoRaWAN network!");
+
+  initialize_radio();
+
+  myLora.tx("TTN Mapper on ESP8266 node");
+
+  led_off();
+  delay(2000);
 }
+
+void led_on()
+{
+  digitalWrite(2, 1);
+}
+
+void led_off()
+{
+  digitalWrite(2, 0);
+}
+
+
+void initialize_radio()
+{
+  //reset RN2xx3
+  pinMode(RESET, OUTPUT);
+  digitalWrite(RESET, LOW);
+  delay(100);
+  digitalWrite(RESET, HIGH);
+
+  delay(100); //wait for the RN2xx3's startup message
+  mySerial.flush();
+
+  //check communication with radio
+  String hweui = myLora.hweui();
+  while(hweui.length() != 16)
+  {
+    Serial.println("Communication with RN2xx3 unsuccessful. Power cycle the board.");
+    Serial.println(hweui);
+    delay(10000);
+    hweui = myLora.hweui();
+  }
+
+  //print out the HWEUI so that we can register it via ttnctl
+  Serial.println("When using OTAA, register this DevEUI: ");
+  Serial.println(hweui);
+  Serial.println("RN2xx3 firmware version:");
+  Serial.println(myLora.sysver());
+
+  //configure your keys and join the network
+  Serial.println("Trying to join TTN");
+  bool join_result = false;
+
+  //ABP: initABP(String addr, String AppSKey, String NwkSKey);
+ // join_result = myLora.initABP("02017201", "8D7FFEF938589D95AAD928C2E2E7E48F", "AE17E567AECC8787F749A62F5541D522");
+
+  // OTAA: initOTAA(String AppEUI, String AppKey);
+  join_result = myLora.initOTAA("BE7A000000001465", "5AB9EC20C83515D73EA5C58B49003B6F");
+
+  while(!join_result)
+  {
+    Serial.println("Unable to join. Are your keys correct, and do you have TTN coverage?");
+    delay(60000); //delay a minute before retry
+    join_result = myLora.init();
+  }
+  Serial.println("Successfully joined TTN");
+}
+
+void blink_led(int count) {
+  for (int i = 0; i < count; i++) {
+    digitalWrite(2, HIGH);  // LED on
+    delay(200);  // LED on for 200ms
+    digitalWrite(2, LOW);   // LED off
+    delay(200);  // LED off for 200ms
+  }
+}
+
 
 void loop() {
   mavlink_message_t receivedMessage;  // MAVLink message container
-  mavlink_status_t mavStatus;        // MAVLink parsing status
+  mavlink_status_t mavStatus;
+  static unsigned long lastTransmissionTime = 0;
+  const unsigned long transmissionInterval = 3000; // 3 seconds
 
-  // Check for MAVLink data availability
   while (Serial.available()) {
-    uint8_t incomingByte = Serial.read();  // Read incoming byte
+    uint8_t incomingByte = Serial.read();
 
-    // Parse MAVLink byte stream
     if (mavlink_parse_char(MAVLINK_COMM_0, incomingByte, &receivedMessage, &mavStatus)) {
-      // Handle heartbeat messages
-      if (receivedMessage.msgid == MAVLINK_MSG_ID_HEARTBEAT) {
-        mavlink_heartbeat_t heartbeat;
-        mavlink_msg_heartbeat_decode(&receivedMessage, &heartbeat);
-
-        // Display heartbeat details
-        Serial.println("Heartbeat Message Received:");
-        Serial.print("    Type: ");
-        Serial.println(heartbeat.type);
-        Serial.print("    Autopilot: ");
-        Serial.println(heartbeat.autopilot);
-        Serial.print("    System Status: ");
-        Serial.println(heartbeat.system_status);
-
-        // Send data every 3 seconds
+      // Handle GPS_RAW_INT MAVLink messages
+      if (receivedMessage.msgid == MAVLINK_MSG_ID_GPS_RAW_INT) {
         unsigned long currentTime = millis();
-        if (currentTime - lastHeartbeatTime >= 3000) {
-          // Format payload for LoRa
-          String payload = "HB:" + String(heartbeat.type) +
-                           ",AP:" + String(heartbeat.autopilot) +
-                           ",SS:" + String(heartbeat.system_status);
+        if (currentTime - lastTransmissionTime >= transmissionInterval) {
+          mavlink_gps_raw_int_t gps;
+          mavlink_msg_gps_raw_int_decode(&receivedMessage, &gps);
 
-          // Send heartbeat data over LoRa
-          TX_RETURN_TYPE result = loraModule.txUncnf(payload);
+          // Display GPS details
+          Serial.println("GPS_RAW_INT Message Received:");
+          Serial.print("    Lat: ");
+          Serial.println(gps.lat / 1e7, 7);
+          Serial.print("    Lon: ");
+          Serial.println(gps.lon / 1e7, 7);
+          Serial.print("    Alt: ");
+          Serial.println(gps.alt / 1e3, 3);
+
+          // Create LoRa payload
+          String payload = "GPS:Lat:" + String(gps.lat / 1e7, 7) +
+                           ",Lon:" + String(gps.lon / 1e7, 7) +
+                           ",Alt:" + String(gps.alt / 1e3, 3);
+
+          // Send GPS data over LoRa
+          TX_RETURN_TYPE result = myLora.tx(payload);
           if (result == TX_SUCCESS) {
-            Serial.println("Heartbeat data sent over LoRa successfully.");
-            
-            // Blink LED to indicate transmission
-            ledState = !ledState;
-            digitalWrite(ledPin, ledState);
+            Serial.println("GPS data sent over LoRa successfully.");
+            blink_led(2);  // Blink LED twice to indicate successful transmission
           } else {
-            Serial.println("Failed to send heartbeat data over LoRa.");
+            Serial.println("Failed to send GPS data over LoRa.");
           }
 
-          // Update last transmission time
-          lastHeartbeatTime = currentTime;
+          lastTransmissionTime = currentTime;  // Update lastTransmissionTime
         }
       }
     }
   }
 }
+
+
