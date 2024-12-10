@@ -32,6 +32,10 @@ if response and response.command == mavutil.mavlink.MAV_CMD_SET_MESSAGE_INTERVAL
 else:
     print("Message request failed")
 
+while 1:
+    mag = sim_connection.recv_match(type='GPS_RAW_IMU', blocking=True)
+    print(mag)
+
 # Loop to forward MAVLink messages from simulation to ESP32
 """try:
     while True:
