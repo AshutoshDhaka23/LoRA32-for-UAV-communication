@@ -1,9 +1,12 @@
 #include "mavlink/common/mavlink.h"
+<<<<<<< Updated upstream
 bool messageRequested = false;
+=======
+>>>>>>> Stashed changes
 
 void setup() {
   // Initialize USB serial connection
-  Serial.begin(38400); // Match SITL's MAVLink baud rate
+  Serial.begin(57600); // Match SITL's MAVLink baud rate
   delay(1000); // Allow time for USB connection to establish
 }
 
