@@ -72,12 +72,18 @@ void initialize_radio()
 }
 
 void loop() {
+
+  clearHardwareSerialBuffer(mySerial); 
+
+  if (Serial.available() > 0){
+
   mavlink_message_t receivedMessage;  // MAVLink message container
   mavlink_status_t mavStatus;
   static unsigned long lastTransmissionTime = 0;
   const unsigned long transmissionInterval = 5000; // 5 seconds
 
-  while (Serial.available()) {
+
+  while (Serial.available() > 0) {
     uint8_t incomingByte = Serial.read();
 
     if (mavlink_parse_char(MAVLINK_COMM_0, incomingByte, &receivedMessage, &mavStatus)) {
@@ -103,18 +109,18 @@ void loop() {
           TX_RETURN_TYPE result = myLora.txBytes(payload, sizeof(payload));
           if (result == TX_SUCCESS) {
             Serial.println("GPS data sent over LoRa successfully.");
+            lastTransmissionTime = currentTime;
             blink_led(2);  // Blink LED twice to indicate successful transmission
           } else {
             Serial.println("Failed to send GPS data over LoRa.");
           }
-
-          lastTransmissionTime = currentTime;  // Update lastTransmissionTime
         }
       }
     }
   }
+  }
+  delay(10);
 }
-
 
 void led_on()
 {
@@ -134,3 +140,10 @@ void blink_led(int count) {
     delay(200);  // LED off for 200ms
   }
 }
+
+void clearHardwareSerialBuffer(SoftwareSerial &serial) {
+  while (serial.available() > 0) {
+    serial.read(); // Read and discard all incoming bytes
+  }
+}
+
