@@ -82,11 +82,29 @@ void loop() {
   static unsigned long lastTransmissionTime = 0;
   const unsigned long transmissionInterval = 5000; // 5 seconds
 
+  int32_t lat, lon, alt;
 
-  while (Serial.available() > 0) {
-    uint8_t incomingByte = Serial.read();
+  if (Serial.available() > 0) {
+    String message = Serial.readStringUntil('\n');
+    sscanf(message.c_str(), "%d %d %d", &lat, &lon, &alt); // Extract values from the string
 
-    if (mavlink_parse_char(MAVLINK_COMM_0, incomingByte, &receivedMessage, &mavStatus)) {
+    Serial.print(lat); // Convert to decimal degrees
+    Serial.print(lon); // Convert to decimal degrees
+    Serial.print(alt); // Convert to meters
+
+    uint8_t payload[12];
+    memcpy(&payload[0], &lat, 4);
+    memcpy(&payload[4], &lon, 4);
+    memcpy(&payload[8], &alt, 4);
+
+    TX_RETURN_TYPE result = myLora.txBytes(payload, sizeof(payload));
+          if (result == TX_SUCCESS) {
+            Serial.println("GPS data sent over LoRa successfully.");
+            blink_led(2);  // Blink LED twice to indicate successful transmission
+          } else {
+            Serial.println("Failed to send GPS data over LoRa.");
+          }
+    /*if (mavlink_parse_char(MAVLINK_COMM_0, incomingByte, &receivedMessage, &mavStatus)) {
       // Handle GPS_RAW_INT MAVLink messages
       if (receivedMessage.msgid == MAVLINK_MSG_ID_GPS_RAW_INT) {
         unsigned long currentTime = millis();
@@ -116,10 +134,8 @@ void loop() {
           }
         }
       }
-    }
+    }*/
   }
-  }
-  delay(10);
 }
 
 void led_on()

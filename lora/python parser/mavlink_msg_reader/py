@@ -1,0 +1,21 @@
+from pymavlink import mavutil
+import pandas as pd
+import time
+
+the_connection = mavutil.mavlink_connection('udpin:localhost:14550')
+
+the_connection.wait_heartbeat()
+print("Received heartbeat message! System ID: %u, Component ID: %u" % (the_connection.target_system, the_connection.target_component))
+
+data = []
+
+df = pd.DataFrame(data)
+start_time = time.time()
+while time.time() - start_time < 10:
+    msg = the_connection.recv_match(blocking=True)
+    print(msg)
+    data.append(msg.to_dict())
+
+df = pd.DataFrame(data)
+print(df)
+df.to_csv('mavlink_data.csv', index=False)
