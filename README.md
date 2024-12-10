@@ -12,3 +12,5 @@ https://github.com/jpmeijers/RN2483-Arduino-Library - using this lib example we 
 ### setting up the simulation 
 https://ardupilot.org/dev/docs/building-setup-linux.html - this is what is needed. 
 and using https://mavlink.io/en/mavgen_python/ - this mavlink reference a basic message parser can be made.
+
+https://ardupilot.org/dev/docs/learning-ardupilot-uarts-and-the-console.html - this link is really important to simulate what we want. 
