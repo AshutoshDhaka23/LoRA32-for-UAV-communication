@@ -1,4 +1,5 @@
-#include <mavlink.h>
+#include "mavlink/common/mavlink.h"
+bool messageRequested = false;
 
 void setup() {
   // Initialize USB serial connection
@@ -42,6 +43,23 @@ void receiveMavlinkMessages() {
         mavlink_gps_raw_int_t gps_raw;
         mavlink_msg_gps_raw_int_decode(&msg, &gps_raw);
 
+        int32_t = gps_raw.lat;
+        int32_t = gps_raw.lon;
+        int32_t = gps_raw.alt;
+
+        uint8_t payload[12];
+        memcpy(&payload[0], &lat, 4);
+        memcpy(&payload[4], &lon, 4);
+        memcpy(&payload[8], &alt, 4); 
+
+        TX_RETURN_TYPE result = myLora.txBytes(payload, sizeof(payload));
+        if (result == TX_SUCCESS) {
+            Serial.println("GPS data sent over LoRa successfully.");
+            lastTransmissionTime = currentTime;
+            blink_led(2);  // Blink LED twice to indicate successful transmission
+          } else {
+            Serial.println("Failed to send GPS data over LoRa.");
+
         // Print GPS data to the serial monitor (optional)
         Serial.println("GPS Data Received:");
         Serial.print("Latitude: "); Serial.println(gps_raw.lat / 1e7);
@@ -52,12 +70,34 @@ void receiveMavlinkMessages() {
   }
 }
 
-void loop() {
-  // Request GPS_RAW_INT message at 1 Hz
-  sendRequestMessageInterval(1, 1, 24, 1000000);
   
+}
+
+void led_on()
+{
+  digitalWrite(2, 1);
+}
+
+void led_off()
+{
+  digitalWrite(2, 0);
+}
+
+void blink_led(int count) {
+  for (int i = 0; i < count; i++) {
+    digitalWrite(2, HIGH);  // LED on
+    delay(200);  // LED on for 200ms
+    digitalWrite(2, LOW);   // LED off
+    delay(200);  // LED off for 200ms
+  }
+}
+
+void loop() {
+  if (!messageRequested){
+    sendRequestMessageInterval(1, 1, 24, 5000000);
+    messageRequested= true;
+  }
   // Handle incoming MAVLink messages
   receiveMavlinkMessages();
-  
-  delay(1000); // Wait 1 second before sending the next request
+  delay(3000);
 }
