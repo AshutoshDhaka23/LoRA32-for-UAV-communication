@@ -123,6 +123,7 @@ void loop() {
           memcpy(&payload[4], &lon, 4);
           memcpy(&payload[8], &alt, 4);
 
+<<<<<<< Updated upstream
           // Send GPS data over LoRa
           TX_RETURN_TYPE result = myLora.txBytes(payload, sizeof(payload));
           if (result == TX_SUCCESS) {
@@ -131,10 +132,38 @@ void loop() {
             blink_led(2);  // Blink LED twice to indicate successful transmission
           } else {
             Serial.println("Failed to send GPS data over LoRa.");
+=======
+          // Send GPS data over LoRa with retry logic
+          TX_RETURN_TYPE result;
+          int retryCount = 0;
+          const int maxRetries = 3;
+
+          do {
+            result = myLora.txBytes(payload, sizeof(payload));
+            if (result == TX_SUCCESS) {
+              Serial.println("GPS data sent over LoRa successfully.");
+              blink_led(2);  // Blink LED twice to indicate successful transmission
+              break;
+            } else {
+              Serial.println("Failed to send GPS data over LoRa. Retrying...");
+              retryCount++;
+              delay(2000); // Wait before retrying
+            }
+          } while (retryCount < maxRetries);
+
+          if (retryCount == maxRetries) {
+            Serial.println("Max retries reached. Failed to send GPS data.");
+>>>>>>> Stashed changes
           }
         }
       }
     }*/
+  }
+
+  // Rejoin logic in case the connection is lost
+  if (!myLora.init()) {
+    Serial.println("LoRa connection lost. Rejoining...");
+    initialize_radio();
   }
 }
 
