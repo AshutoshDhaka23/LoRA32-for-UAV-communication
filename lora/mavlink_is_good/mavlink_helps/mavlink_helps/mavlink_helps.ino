@@ -1,8 +1,10 @@
 #include "mavlink/common/mavlink.h"
 #include <rn2xx3.h>
 #include <SoftwareSerial.h>
+#include <FlowControl.h>
 
-bool messageRequested = false;  
+bool messageRequested = false;
+#define BUFFER_SIZE 128
 #define RESET 15
 SoftwareSerial mySerial(4, 5);
 rn2xx3 myLora(mySerial);
