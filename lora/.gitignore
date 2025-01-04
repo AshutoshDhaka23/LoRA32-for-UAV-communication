@@ -1,6 +1,6 @@
-/mavlink_is_good
-/ttn_otaa
-/rn2483_mavlink
-/python parser
-/loralora
+mavlink_is_good/
+ttn_otaa/
+rn2483_mavlink/
+python parser/
+loralora/
 
