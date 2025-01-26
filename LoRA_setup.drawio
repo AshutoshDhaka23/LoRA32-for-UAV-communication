@@ -1,0 +1,52 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.3 Chrome/130.0.6723.137 Electron/33.2.1 Safari/537.36" version="26.0.3">
+  <diagram name="Page-1" id="Awzh1Q02Zdl5sLoUEWY3">
+    <mxGraphModel dx="1434" dy="854" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="-SL5K1DrObN9N9OkVDey-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=4;" parent="1" source="-SL5K1DrObN9N9OkVDey-1" target="-SL5K1DrObN9N9OkVDey-9" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-SL5K1DrObN9N9OkVDey-1" value="" style="image;points=[];aspect=fixed;html=1;align=center;shadow=0;dashed=0;image=img/lib/allied_telesis/computer_and_terminals/Laptop.svg;" parent="1" vertex="1">
+          <mxGeometry x="104.19" y="360" width="167.61" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="-SL5K1DrObN9N9OkVDey-5" value="&lt;font&gt;Laptop Running SImulation&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;" parent="1" vertex="1">
+          <mxGeometry x="80.5" y="530" width="215" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-SL5K1DrObN9N9OkVDey-8" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;ESP32 mediator&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="443" y="420" width="150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="-SL5K1DrObN9N9OkVDey-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=classic;startFill=1;endSize=8;sourcePerimeterSpacing=0;strokeWidth=4;" parent="1" source="-SL5K1DrObN9N9OkVDey-9" target="-SL5K1DrObN9N9OkVDey-16" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-SL5K1DrObN9N9OkVDey-9" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://joy-it.net/files/files/Produkte/SBC-NodeMCU-ESP32/SBC-NodeMCU-ESP32-01.png;" parent="1" vertex="1">
+          <mxGeometry x="428" y="240" width="180" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="-SL5K1DrObN9N9OkVDey-10" value="&lt;ul&gt;&lt;li&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Uses MAVProxy to simulate drone.&amp;nbsp;&lt;/font&gt;&lt;/li&gt;&lt;li&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Sends Telemetry over UART.&amp;nbsp;&lt;/font&gt;&lt;/li&gt;&lt;li&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Helps with packet selection&amp;nbsp;&lt;/font&gt;&lt;/li&gt;&lt;li&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Telemetry conditioning&lt;/font&gt;&lt;/li&gt;&lt;/ul&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="53" y="590" width="295" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="-SL5K1DrObN9N9OkVDey-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=4;" parent="1" source="-SL5K1DrObN9N9OkVDey-12" target="-SL5K1DrObN9N9OkVDey-9" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-SL5K1DrObN9N9OkVDey-12" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://pngimg.com/d/drone_PNG34.png;" parent="1" vertex="1">
+          <mxGeometry x="70.78" y="150" width="284.45" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="-SL5K1DrObN9N9OkVDey-13" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;Drone running&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;&amp;nbsp;ArduPilot or PX4&lt;/font&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="128" y="300" width="150" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="-SL5K1DrObN9N9OkVDey-14" value="&lt;ul&gt;&lt;li&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Unpacking MAVLINK packets&lt;/font&gt;&lt;/li&gt;&lt;li&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Buffer for UART management&lt;/font&gt;&lt;/li&gt;&lt;li&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Encoding MAVLINK data&lt;/font&gt;&lt;/li&gt;&lt;li&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Telemetry forwarding to LoRA&lt;/font&gt;&lt;/li&gt;&lt;/ul&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="378" y="460" width="270" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="-SL5K1DrObN9N9OkVDey-15" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;LoRA end device&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="758.01" y="425" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="-SL5K1DrObN9N9OkVDey-16" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://d2t1xqejof9utc.cloudfront.net/screenshots/pics/944a64d305f4857cee54e957154e14f1/large.png;" parent="1" vertex="1">
+          <mxGeometry x="731.34" y="265" width="213.33" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="-SL5K1DrObN9N9OkVDey-17" value="&lt;ul&gt;&lt;li&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Sets up communication with LoRA gateway&lt;/font&gt;&lt;/li&gt;&lt;li&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Message transmitting&lt;/font&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Experiment with different n/w parameters&lt;/span&gt;&lt;/li&gt;&lt;/ul&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="678" y="465" width="370" height="100" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

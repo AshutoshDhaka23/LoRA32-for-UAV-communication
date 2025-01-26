@@ -74,7 +74,7 @@ void sendRequestMessageInterval(uint8_t target_sysid, uint8_t target_compid, uin
     Serial.write(buf, len);
 }
 
-void sendLoraMsg() {
+void sendLoraMsg() {c:\Users\adop\Desktop\Airplate_special course\Airplate_thesis\LTE-m\sara-r5\AirPlate_Board_RemoteID_V8_\AirPlate_Board_RemoteID_V8_\AirPlate_Board_RemoteID_V8_.ino
     mavlink_message_t msg;
     mavlink_status_t status;
     while (Serial.available()) {
